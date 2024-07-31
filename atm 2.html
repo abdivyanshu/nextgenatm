@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        #atm-ui, #pin-screen, #balance-check-screen, #fund-transfer-screen, #mobile-recharge-screen, #utility-bill-screen {
+            display: none;
+        }
+        .menu-item {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 200px;
+        }
+        .menu-item:hover {
+            background-color: #0056b3;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 0;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        select, input[type="password"], input[type="text"], input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 220px;
+        }
+        button {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>BOI</h1>
+    </div>
+    <div class="container">
+        <div id="language-selection">
+            <h2>Select Language</h2>
+            <select id="language" onchange="showPinScreen()">
+                <option value="" disabled selected>Select your language</option>
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+                <option value="tamil">Tamil</option>
+                <option value="kannada">Kannada</option>
+            </select>
+        </div>
+
+        <div id="pin-screen">
+            <h2>Enter PIN or Use Biometrics</h2>
+            <input type="password" id="pin" placeholder="Enter your PIN">
+            <br><br>
+            <button class="menu-item" onclick="verifyPin()">Submit</button>
+            <br><br>
+            <button class="menu-item" onclick="openAtmUI()">Use Biometrics</button>
+        </div>
+
+        <div id="atm-ui">
+            <h2>Welcome to BOI ATM</h2>
+            <button class="menu-item" onclick="showBalanceCheck()">Balance Check</button>
+            <button class="menu-item" onclick="showFundTransfer()">Fund Transfer</button>
+            <button class="menu-item" onclick="showMobileRecharge()">Mobile Recharge</button>
+            <button class="menu-item" onclick="showUtilityBillScreen()">Utility Bill Payment</button>
+        </div>
+
+        <div id="balance-check-screen">
+            <h2>Balance Check</h2>
+            <input type="text" id="account-number" placeholder="Enter 15-digit Account Number">
+            <br><br>
+            <button class="menu-item" onclick="showBalance()">Check Balance</button>
+            <br><br>
+            <div id="balance-display" style="display: none;">
+                <h3>Your balance is: ₹1000</h3>
+            </div>
+        </div>
+
+        <div id="fund-transfer-screen">
+            <h2>Fund Transfer</h2>
+            <input type="text" id="transfer-account-number" placeholder="Enter 15-digit Account Number">
+            <br><br>
+            <input type="number" id="transfer-amount" placeholder="Enter Amount">
+            <br><br>
+            <button class="menu-item" onclick="processFundTransfer()">Transfer</button>
+        </div>
+
+        <div id="mobile-recharge-screen">
+            <h2>Mobile Recharge</h2>
+            <input type="text" id="mobile-number" placeholder="Enter Mobile Number">
+            <br><br>
+            <select id="network-carrier">
+                <option value="" disabled selected>Select Network Carrier</option>
+                <option value="Airtel">Airtel</option>
+                <option value="Jio">Jio</option>
+                <option value="VI">VI</option>
+                <option value="BSNL">BSNL</option>
+            </select>
+            <br><br>
+            <select id="recharge-plan">
+                <option value="" disabled selected>Select Plan</option>
+                <option value="222">₹222</option>
+                <option value="444">₹444</option>
+                <option value="666">₹666</option>
+            </select>
+            <br><br>
+            <button class="menu-item" onclick="processMobileRecharge()">Recharge</button>
+        </div>
+
+        <div id="utility-bill-screen">
+            <h2>Utility Bill Payment</h2>
+            <select id="biller">
+                <option value="" disabled selected>Select Biller</option>
+                <option value="electricity">Electricity</option>
+                <option value="house_tax">House Tax</option>
+                <option value="water_tax">Water Tax</option>
+                <option value="dth">DTH</option>
+                <option value="gas">Gas</option>
+                <option value="broadband">Broadband</option>
+            </select>
+            <br><br>
+            <input type="text" id="utility-account-number" placeholder="Enter 10-digit Account Number">
+            <br><br>
+            <input type="text" id="bill-amount" placeholder="Enter Bill Amount">
+            <br><br>
+            <button class="menu-item" onclick="processUtilityBillPayment()">Pay Bill</button>
+        </div>
+    </div>
+
+    <script>
+        function showPinScreen() {
+            document.getElementById('language-selection').style.display = 'none';
+            document.getElementById('pin-screen').style.display = 'block';
+        }
+
+        function verifyPin() {
+            const pin = document.getElementById('pin').value;
+            if (pin === '1234') {  // Sample pin for demonstration
+                openAtmUI();
+            } else {
+                alert('Invalid PIN');
+            }
+        }
+
+        function openAtmUI() {
+            document.getElementById('pin-screen').style.display = 'none';
+            document.getElementById('atm-ui').style.display = 'block';
+        }
+
+        function showBalanceCheck() {
+            document.getElementById('atm-ui').style.display = 'none';
+            document.getElementById('balance-check-screen').style.display = 'block';
+        }
+
+        function showBalance() {
+            const accountNumber = document.getElementById('account-number').value;
+            if (accountNumber.length === 15 && !isNaN(accountNumber)) {
+                document.getElementById('balance-display').style.display = 'block';
+            } else {
+                alert('Please enter a valid 15-digit account number');
+            }
+        }
+
+        function showFundTransfer() {
+            document.getElementById('atm-ui').style.display = 'none';
+            document.getElementById('fund-transfer-screen').style.display = 'block';
+        }
+
+        function processFundTransfer() {
+            const accountNumber = document.getElementById('transfer-account-number').value;
+            const amount = document.getElementById('transfer-amount').value;
+            if (accountNumber.length === 15 && !isNaN(accountNumber) && amount > 0) {
+                alert(`Transferring ₹${amount} to account number ${accountNumber}`);
+                // Here, you can add more detailed actions for the fund transfer
+            } else {
+                alert('Please enter a valid 15-digit account number and a valid amount');
+            }
+        }
+
+        function showMobileRecharge() {
+            document.getElementById('atm-ui').style.display = 'none';
+            document.getElementById('mobile-recharge-screen').style.display = 'block';
+        }
+
+        function processMobileRecharge() {
+            const mobileNumber = document.getElementById('mobile-number').value;
+            const networkCarrier = document.getElementById('network-carrier').value;
+            const rechargePlan = document.getElementById('recharge-plan').value;
+
+            if (mobileNumber.length === 10 && !isNaN(mobileNumber) && networkCarrier && rechargePlan) {
+                alert(`Recharging mobile number ${mobileNumber} with ${networkCarrier} plan of ₹${rechargePlan}`);
+                // Here, you can add more detailed actions for the mobile recharge
+            } else {
+                alert('Please enter a valid 10-digit mobile number, select a network carrier, and select a recharge plan');
+            }
+        }
+
+        function showUtilityBillScreen() {
+            document.getElementById('atm-ui').style.display = 'none';
+            document.getElementById('utility-bill-screen').style.display = 'block';
+        }
+
+        function processUtilityBillPayment() {
+            const biller = document.getElementById('biller').value;
+            const utilityAccountNumber = document.getElementById('utility-account-number').value;
+            const billAmount = document.getElementById('bill-amount').value;
+
+            if (biller && utilityAccountNumber.length === 10 && !isNaN(utilityAccountNumber) && billAmount > 0) {
+                alert(`Paying ₹${billAmount} for ${biller} bill of account number ${utilityAccountNumber}`);
+                // Here, you can add more detailed actions for the utility bill payment
+            } else {
+                alert('Please select a biller, enter a valid 10-digit account number and a valid amount');
+            }
+        }
+    </script>
+</body>
+</html>
